@@ -11,7 +11,7 @@ function pitch = PECF(data, minFreq, maxFreq) % Pitch estimation comb filter
     for tau = minTau:maxTau
         xt = data(1:end-tau);
         x = data(tau+1:end);             % Trimmed input data
-        autoCor =0;
+        autoCor = 0;
         for n=1:length(x)
             autoCor = autoCor + (1/(nData-tau))*x(n)*xt(n);
         end

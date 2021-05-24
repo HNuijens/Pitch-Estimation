@@ -1,6 +1,24 @@
-% comb filter function
+%% Pitch Estimation Comparison
 clear all;
+
+%% Load input signal
 [in, fs] = audioread("C:\Users\helme\Documents\Sound and Music Computing\SMC8\Sound and Music Signal Analysis\4. Slides and Exercises\Lecture 6 pitch estimation I\Exercises-20210407\09viola.flac");
+nHarmonics = 10;
+%% Create input signal
+fs = 44100;
+dur = 3;
+dt = 1/fs;
+t = 0:dt:dur-dt;
+f = 200;
+nHarmonics = 10; 
+in = zeros(1,length(t));
+for h = 1:nHarmonics
+    in = in + sin(2*pi*f*t*h);
+end
+
+%% Function settings
+minFreq = 100;
+maxFreq = 1000;
 overlap = 75;
 nData = length(in);
 segmentLength =  25/1000;
@@ -8,17 +26,19 @@ nSegmentLength = segmentLength * fs;
 iVector = 1:nSegmentLength;
 nShift = round((1-overlap/100)*nSegmentLength);
 nSegments = ceil((nData-nSegmentLength+1)/nShift);
+
 pitch = zeros(nSegments,1);
 
+%% Estimating pitch
 for i = 1:nSegments
-    pitchVal =  PEAC(in(iVector), 100/fs, 1000/fs);
+    pitchVal =  PEHS(in(iVector), minFreq/fs, maxFreq/fs, nHarmonics);
     pitch(i) = pitchVal*fs;
     iVector = iVector + nShift;
-    if i > 1553
-        %dbstop at 18
-    end
 end
 
+
+
+%% Plot 
 specSegmentLength = round(2*nSegmentLength);
 specWindow = gausswin(specSegmentLength);
 nDft = 4096;
