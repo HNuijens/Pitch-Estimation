@@ -2,8 +2,8 @@
 clear all;
 
 %% Load input signal
-[in, fs] = audioread("C:\Users\helme\Documents\Sound and Music Computing\SMC8\Sound and Music Signal Analysis\4. Slides and Exercises\Lecture 6 pitch estimation I\Exercises-20210407\trumpetFull.wav");
-
+[in, fs] = audioread("C:\Users\helme\Documents\Sound and Music Computing\SMC8\Sound and Music Signal Analysis\4. Slides and Exercises\Lecture 6 pitch estimation I\Exercises-20210407\09viola.flac");
+in = in(:,1);       % Get one channel
 %% Or create input signal
 fs = 44100;
 dur = 3;
@@ -24,11 +24,15 @@ for i = 1:nFrequencies
     indexVec = indexVec + length(t);   
 end
 
-
+%% Adding Noise
+nData = length(in);
+SNR = 0.6;                   % Desired signal / noise 
+e = rand(nData,1)*2 - 1;     % Noise signal
+in = SNR*in + (1-SNR)*e;     % input signal plus added noise
 
 %% Function settings
-minFreq = 200;
-maxFreq = 2000;
+minFreq = 150;
+maxFreq = 1000;
 overlap = 75;
 nData = length(in);
 segmentLength =  25/1000;
@@ -55,7 +59,6 @@ end
    pitchAC = pitchAC*fs;
    pitchCF = pitchCF*fs;
    pitchHS = pitchHS*fs;
-
 
 %% Plot & Compare
 specSegmentLength = round(2*nSegmentLength);
