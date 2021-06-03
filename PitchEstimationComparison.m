@@ -26,9 +26,15 @@ end
 
 %% Adding Noise
 nData = length(in);
-SNR = 0.15;                  % Desired signal / noise 
-e = rand(nData,1)*2 - 1;     % Noise signal
-in = SNR*in + (1-SNR)*e;     % input signal plus added noise
+noiseRatio = 0.9;                      % Mix between signal and noise, 0 is only noise 
+e = rand(nData,1)*2 - 1;               % Noise signal
+in = noiseRatio*in;                    % Scale signal according to ratio
+e = (1-noiseRatio)*e;                  % Scale noise according to ratio
+Pin = rms(in)^2;                       % Power of input signal
+Pe = rms(e)^2;                         % Power of noise signal
+SNR = Pin/Pe;                          % Signal to Noise Ratio
+disp(['SNR = ',num2str(SNR)]);         % Display SNR                          
+in = in+e;                             % Input signal plus added noise
 
 %% Function settings
 minFreq = 150;                                      % Minimum frequency that can be estimated
@@ -40,7 +46,7 @@ nSegmentLength = segmentLength * fs;                % Segment Length in samples
 iVector = 1:nSegmentLength;                         % Vector used for indexing
 nShift = round((1-overlap/100)*nSegmentLength);     % Segment shift in samples
 nSegments = ceil((nData-nSegmentLength+1)/nShift);  % Total amount of segments                                   
-nHarmonic = 5;                                      % Amount of harmonics of analyzed signal
+nHarmonics = 5;                                      % Amount of harmonics of analyzed signal
 
 pitchAC = zeros(nData,1);                           % Vector containing the estimated pitch using Auto Correlation
 pitchCF = zeros(nData,1);                           % Vector containing the estimated pitch using Comb Filtering
@@ -100,3 +106,6 @@ hold off
 xlabel('time [samples]')
 ylabel('frequency [Hz]')
 title('Harmonic Summation');
+
+%% Save figure
+saveas(gcf,'ViolinWithNoise13p5SNR.png')
