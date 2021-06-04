@@ -2,8 +2,9 @@
 clear all;
 
 %% Load input signal
-[in, fs] = audioread("C:\Users\helme\Documents\Sound and Music Computing\SMC8\Sound and Music Signal Analysis\4. Slides and Exercises\Lecture 6 pitch estimation I\Exercises-20210407\09viola.flac");
-in = in(:,1);                                       % Reduce to mono
+[in, fs] = audioread("C:\Users\helme\Documents\Sound and Music Computing\SMC8\Sound and Music Signal Analysis\3. Mini Project\Samples\roy.wav");
+in = in(:,1);       % Reduce to mono
+
 %% Or create input signal
 fs = 44100;                                         
 dur = 3;                                            % Duration of each frequency
@@ -26,7 +27,7 @@ end
 
 %% Adding Noise
 nData = length(in);
-noiseRatio = 0.9;                      % Mix between signal and noise, 0 is only noise 
+noiseRatio = 0.50;                     % Mix between signal and noise, 0 is only noise 
 e = rand(nData,1)*2 - 1;               % Noise signal
 in = noiseRatio*in;                    % Scale signal according to ratio
 e = (1-noiseRatio)*e;                  % Scale noise according to ratio
@@ -37,7 +38,7 @@ disp(['SNR = ',num2str(SNR)]);         % Display SNR
 in = in+e;                             % Input signal plus added noise
 
 %% Function settings
-minFreq = 150;                                      % Minimum frequency that can be estimated
+minFreq = 230;                                      % Minimum frequency that can be estimated
 maxFreq = 1000;                                     % Maximum frequency that can be estimated
 overlap = 75;                                       % Percentage overlap from previous segment
 nData = length(in);                                 % Total amount of samples
@@ -46,7 +47,7 @@ nSegmentLength = segmentLength * fs;                % Segment Length in samples
 iVector = 1:nSegmentLength;                         % Vector used for indexing
 nShift = round((1-overlap/100)*nSegmentLength);     % Segment shift in samples
 nSegments = ceil((nData-nSegmentLength+1)/nShift);  % Total amount of segments                                   
-nHarmonics = 5;                                      % Amount of harmonics of analyzed signal
+nHarmonics = 5;                                     % Amount of harmonics of analyzed signal
 
 pitchAC = zeros(nData,1);                           % Vector containing the estimated pitch using Auto Correlation
 pitchCF = zeros(nData,1);                           % Vector containing the estimated pitch using Comb Filtering
@@ -108,4 +109,4 @@ ylabel('frequency [Hz]')
 title('Harmonic Summation');
 
 %% Save figure
-saveas(gcf,'ViolinWithNoise13p5SNR.png')
+saveas(gcf,'C:\Users\helme\Documents\Sound and Music Computing\SMC8\Sound and Music Signal Analysis\3. Mini Project\Visials\sax0p04SNR.png')
